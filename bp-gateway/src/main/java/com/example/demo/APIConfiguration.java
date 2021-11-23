@@ -12,7 +12,7 @@ public class APIConfiguration {
         return builder.routes()
                 .route("create application", p->p.path("/application/**")
 //						.filters(filter -> filter.stripPrefix(1))
-                        .uri("http://localhost:8081/"))
+                        .uri("lb://application-service"))
 //				.route("notification", p->p.path("/notification/**")
 //						.filters(filter -> filter.stripPrefix(1))
 //						.uri("microservice_path//notification"))
