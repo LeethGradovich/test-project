@@ -16,9 +16,9 @@ public class APIConfiguration {
 //				.route("notification", p->p.path("/notification/**")
 //						.filters(filter -> filter.stripPrefix(1))
 //						.uri("microservice_path//notification"))
-//				.route("auth", p->p.path("/auth/**")
-//						.filters(filter -> filter.stripPrefix(1))
-//						.uri("microservice_path//auth"))
+				.route("auth", p->p.path("/auth/**")
+						.filters(filter -> filter.stripPrefix(1))
+						.uri("lb://auth-service"))
                 .build();
     }
 }
