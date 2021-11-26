@@ -4,5 +4,4 @@ public class JwtResponse {
     private String type = "Bearer";
     private String phoneNumber;
     private String code;
-
 }
