@@ -26,6 +26,8 @@ public class AuthController {
 
         Map<String, String> response = new HashMap<>(2);
 
+
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
