@@ -1,36 +1,92 @@
 package com.example.bpotp.controller;
 
-import com.example.bpotp.payload.PhoneRequest;
+import com.example.bpotp.model.UserAuth;
+import com.example.bpotp.payload.request.LoginRequest;
+import com.example.bpotp.payload.request.PhoneRequest;
+import com.example.bpotp.payload.response.JwtResponse;
+import com.example.bpotp.payload.response.MessageResponse;
+import com.example.bpotp.repository.UserAuthRepository;
+import com.example.bpotp.sequrity.jwt.JwtUtils;
 import com.example.bpotp.service.OtpService;
+import com.example.bpotp.service.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Description;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
+import java.security.NoSuchAlgorithmException;
 
-@Description(value = "Resource for generating and validating OTP requests.")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
-    private OtpService otpService;
+    AuthenticationManager authenticationManager;
 
-    @PostMapping("/phoneNumber")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody PhoneRequest phoneRequest){
+    @Autowired
+    UserAuthRepository userRepository;
 
-        Map<String, String> response = new HashMap<>(2);
+    @Autowired
+    OtpService otpService;
 
+    @Autowired
+    JwtUtils jwtUtils;
 
+    @PostMapping("/otp")
+    public ResponseEntity<?> generateOtp(@Valid @RequestBody PhoneRequest phoneRequest) throws NoSuchAlgorithmException {
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        String phoneNumber = phoneRequest.getPhoneNumber();
+
+        if (!userRepository.existsByPhoneNumber(phoneRequest.getPhoneNumber())) {
+            UserAuth user = new UserAuth(phoneRequest.getPhoneNumber());
+            userRepository.save(user);
+        }
+
+        if (!otpService.generateOtp(phoneNumber))
+        {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: OTP can not be generated."));
+        }
+
+        return ResponseEntity
+                .ok()
+                .body("OTP successfully generated.");
     }
 
+    @PostMapping("/validate")
+    public ResponseEntity<?> validateOtp(@Valid @RequestBody LoginRequest loginRequest) {
 
+        String phoneNumber = loginRequest.getPhoneNumber();
+        if (!userRepository.existsByPhoneNumber(loginRequest.getPhoneNumber())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: your phone number can not be found."));
+        }
+        int code = loginRequest.getCode();
 
+        if (!otpService.validateOTP(phoneNumber, code)) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: OTP is not valid!"));
+        }
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getPhoneNumber(), loginRequest.getCode()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        return ResponseEntity
+                .ok(new JwtResponse(jwt,
+                        userDetails.getId(),
+                        userDetails.getPhoneNumber()));
+    }
 }

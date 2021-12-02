@@ -9,7 +9,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.concurrent.TimeUnit;
 
-
 @Description(value = "Service for generating and validating OTP.")
 @Service
 public class OtpGenerator {
@@ -33,7 +32,6 @@ public class OtpGenerator {
         SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
         int OTP = 100000 + sr.nextInt(900000);
         otpCache.put(key, OTP);
-
         return OTP;
     }
 

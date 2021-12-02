@@ -1,6 +1,5 @@
 package com.example.bpotp.model;
 
-
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotBlank;
@@ -17,6 +16,10 @@ public class UserAuth {
     @NotBlank
     @Size(max = 15)
     private String phoneNumber;
+
+    public UserAuth(String phoneNumber){
+        this.phoneNumber=phoneNumber;
+    }
 
     public Long getId() {
         return id;

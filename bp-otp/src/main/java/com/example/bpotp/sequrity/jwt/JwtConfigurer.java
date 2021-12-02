@@ -6,7 +6,6 @@ import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 public class JwtConfigurer extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
-
     public final static String AUTHORIZATION_HEADER = "Authorization";
     public final static String AUTHORIZATION_TOKEN = "access_token";
 
