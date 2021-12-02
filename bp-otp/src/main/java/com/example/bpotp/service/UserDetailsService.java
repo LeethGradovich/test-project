@@ -4,8 +4,10 @@ import com.example.bpotp.model.UserAuth;
 import com.example.bpotp.repository.UserAuthRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Service
 public class UserDetailsService {
     @Autowired
     UserAuthRepository userRepository;
