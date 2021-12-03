@@ -8,15 +8,13 @@ public class UserDetails {
     private Long id;
     private String phoneNumber;
 
-    public UserDetails(Long id, String phoneNumber) {
-        this.id = id;
+    public UserDetails(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
     public static UserDetails build(UserAuth user) {
 
         return new UserDetails(
-                user.getId(),
                 user.getPhoneNumber());
     }
 

@@ -6,13 +6,12 @@ import com.example.bpotp.payload.request.PhoneRequest;
 import com.example.bpotp.payload.response.JwtResponse;
 import com.example.bpotp.payload.response.MessageResponse;
 import com.example.bpotp.repository.UserAuthRepository;
+import com.example.bpotp.sequrity.AuthToken;
 import com.example.bpotp.sequrity.jwt.JwtUtils;
 import com.example.bpotp.service.OtpService;
-import com.example.bpotp.service.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -76,17 +75,13 @@ public class AuthController {
                     .body(new MessageResponse("Error: OTP is not valid!"));
         }
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getPhoneNumber(), loginRequest.getCode()));
+        Authentication authentication = authenticationManager.authenticate(new AuthToken(loginRequest.getPhoneNumber(), loginRequest.getCode()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
         return ResponseEntity
                 .ok(new JwtResponse(jwt,
-                        userDetails.getId(),
-                        userDetails.getPhoneNumber()));
+                        authentication.getPrincipal().toString()));
     }
 }

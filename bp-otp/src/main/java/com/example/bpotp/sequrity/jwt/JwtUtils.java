@@ -1,6 +1,5 @@
 package com.example.bpotp.sequrity.jwt;
 
-import com.example.bpotp.service.UserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,9 +29,8 @@ public class JwtUtils {
 
     public String generateJwtToken(Authentication authentication) {
 
-        UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
         return Jwts.builder()
-                .setSubject(userPrincipal.getPhoneNumber())
+                .setSubject(authentication.getPrincipal().toString())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)

@@ -3,12 +3,10 @@ package com.example.bpotp.payload.response;
 public class JwtResponse {
     private String token;
     private String type = "Bearer";
-    private Long id;
     private String phoneNumber;
 
-    public JwtResponse(String accessToken, Long id, String phoneNumber){
+    public JwtResponse(String accessToken, String phoneNumber){
         this.token=accessToken;
-        this.id=id;
         this.phoneNumber=phoneNumber;
     }
 
@@ -35,11 +33,4 @@ public class JwtResponse {
         this.phoneNumber = phoneNumber;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 }
