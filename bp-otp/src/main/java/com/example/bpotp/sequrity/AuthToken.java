@@ -3,10 +3,10 @@ package com.example.bpotp.sequrity;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 public class AuthToken extends AbstractAuthenticationToken {
-    private Object phoneNumber;
-    private Object code;
+    private final Object phoneNumber;
+    private final Object code;
 
-    public AuthToken(Object phoneNumber, Object code){
+    public AuthToken(Object phoneNumber, Object code) {
         super(null);
         this.phoneNumber = phoneNumber;
         this.code = code;
@@ -20,13 +20,5 @@ public class AuthToken extends AbstractAuthenticationToken {
     @Override
     public Object getPrincipal() {
         return this.phoneNumber;
-    }
-
-    public void setPhoneNumber(Object phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public void setCode(Object code) {
-        this.code = code;
     }
 }

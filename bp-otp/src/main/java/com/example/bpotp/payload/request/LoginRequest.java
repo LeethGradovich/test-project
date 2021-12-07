@@ -1,25 +1,19 @@
 package com.example.bpotp.payload.request;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.validation.constraints.NotBlank;
 
+@NoArgsConstructor
 public class LoginRequest {
     @NotBlank
+    @Getter
+    @Setter
     private String phoneNumber;
     @NotBlank
+    @Getter
+    @Setter
     private int code;
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
 }

@@ -1,36 +1,14 @@
 package com.example.bpotp.payload.response;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class JwtResponse {
-    private String token;
-    private String type = "Bearer";
-    private String phoneNumber;
-
-    public JwtResponse(String accessToken, String phoneNumber){
-        this.token=accessToken;
-        this.phoneNumber=phoneNumber;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
+    @Getter
+    private final String token;
+    @Getter
+    private final String type = "Bearer";
+    @Getter
+    private final String phoneNumber;
 }

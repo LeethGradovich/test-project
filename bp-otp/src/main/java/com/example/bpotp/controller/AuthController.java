@@ -1,87 +1,71 @@
 package com.example.bpotp.controller;
 
-import com.example.bpotp.model.UserAuth;
 import com.example.bpotp.payload.request.LoginRequest;
 import com.example.bpotp.payload.request.PhoneRequest;
 import com.example.bpotp.payload.response.JwtResponse;
 import com.example.bpotp.payload.response.MessageResponse;
 import com.example.bpotp.repository.UserAuthRepository;
-import com.example.bpotp.sequrity.AuthToken;
 import com.example.bpotp.sequrity.jwt.JwtUtils;
-import com.example.bpotp.service.OtpService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.bpotp.service.AuthServiceImpl;
+import com.example.bpotp.service.OtpServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
+import java.util.NoSuchElementException;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-
-    @Autowired
-    AuthenticationManager authenticationManager;
-
-    @Autowired
-    UserAuthRepository userRepository;
-
-    @Autowired
-    OtpService otpService;
-
-    @Autowired
-    JwtUtils jwtUtils;
+    private final AuthenticationManager authenticationManager;
+    private final UserAuthRepository userRepository;
+    private final OtpServiceImpl otpServiceImpl;
+    private final JwtUtils jwtUtils;
 
     @PostMapping("/otp")
-    public ResponseEntity<?> generateOtp(@Valid @RequestBody PhoneRequest phoneRequest) throws NoSuchAlgorithmException {
-
-        String phoneNumber = phoneRequest.getPhoneNumber();
-
-        if (!userRepository.existsByPhoneNumber(phoneRequest.getPhoneNumber())) {
-            UserAuth user = new UserAuth(phoneRequest.getPhoneNumber());
-            userRepository.save(user);
-        }
-
-        if (!otpService.generateOtp(phoneNumber))
-        {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: OTP can not be generated."));
-        }
-
-        return ResponseEntity
-                .ok()
-                .body("OTP successfully generated.");
+    public MessageResponse generateOtp(@Valid @RequestBody PhoneRequest phoneRequest) throws NoSuchAlgorithmException {
+        AuthServiceImpl authService = new AuthServiceImpl(phoneRequest);
+        authService.writeUserToDatabase(userRepository);
+        authService.generateAuthOtp(otpServiceImpl);
+        return new MessageResponse("OTP successfully generated");
     }
 
     @PostMapping("/validate")
-    public ResponseEntity<?> validateOtp(@Valid @RequestBody LoginRequest loginRequest) {
+    public JwtResponse validateOtp(@Valid @RequestBody LoginRequest loginRequest) {
+        final AuthServiceImpl authService = new AuthServiceImpl(loginRequest);
+        authService.findUserByPhoneNumber(userRepository);
+        authService.validateUserOtp(otpServiceImpl);
+        final Authentication authentication = authService.authenticate(authenticationManager);
+        return new JwtResponse(authService.getJwt(jwtUtils, authentication), authentication.getPrincipal().toString());
+    }
 
-        String phoneNumber = loginRequest.getPhoneNumber();
-        if (!userRepository.existsByPhoneNumber(loginRequest.getPhoneNumber())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: your phone number can not be found."));
-        }
-        int code = loginRequest.getCode();
-
-        if (!otpService.validateOTP(phoneNumber, code)) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: OTP is not valid!"));
-        }
-
-        Authentication authentication = authenticationManager.authenticate(new AuthToken(loginRequest.getPhoneNumber(), loginRequest.getCode()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
-
+    @ExceptionHandler(NoSuchAlgorithmException.class)
+    public ResponseEntity<?> handleNoSuchAlgorithmException(NoSuchAlgorithmException ex) {
         return ResponseEntity
-                .ok(new JwtResponse(jwt,
-                        authentication.getPrincipal().toString()));
+                .badRequest()
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<?> handleNoSuchElementException(NoSuchElementException ex) {
+        return ResponseEntity
+                .badRequest()
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<?> handleSecurityException(SecurityException ex) {
+        return ResponseEntity
+                .badRequest()
+                .body(ex.getMessage());
     }
 }
