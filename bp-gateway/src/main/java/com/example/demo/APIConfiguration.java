@@ -10,15 +10,11 @@ public class APIConfiguration {
     @Bean
     public RouteLocator applicationLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("create application", p->p.path("/application/**")
-//						.filters(filter -> filter.stripPrefix(1))
+                .route("create application", p -> p.path("/application/**")
                         .uri("lb://application-service"))
-//				.route("notification", p->p.path("/notification/**")
-//						.filters(filter -> filter.stripPrefix(1))
-//						.uri("microservice_path//notification"))
-//				.route("auth", p->p.path("/auth/**")
-//						.filters(filter -> filter.stripPrefix(1))
-//						.uri("microservice_path//auth"))
+                .route("auth", p -> p.path("/auth/**")
+                        .filters(filter -> filter.stripPrefix(1))
+                        .uri("lb://auth-service"))
                 .build();
     }
 }
