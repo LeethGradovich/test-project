@@ -8,6 +8,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,14 +17,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
 @Component
 @Slf4j
 public class JwtUtils {
-
     @Value("${bp.app.jwtSecret}")
     private String jwtSecret;
 
@@ -33,7 +32,6 @@ public class JwtUtils {
     private static final String AUTHORITIES_KEY = "auth";
 
     public String generateJwtToken(Authentication authentication) {
-
         return Jwts.builder()
                 .setSubject(authentication.getPrincipal().toString())
                 .setIssuedAt(new Date())
@@ -61,12 +59,12 @@ public class JwtUtils {
     }
 
     public Authentication getAuthentication(String token) {
-        Claims claims = Jwts.parser()
+        val claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
                 .getBody();
-        String principal = claims.getSubject();
-        Collection<? extends GrantedAuthority> authorities =
+        val principal = claims.getSubject();
+        val authorities =
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());

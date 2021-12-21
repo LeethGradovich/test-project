@@ -7,7 +7,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 @SpringBootApplication
 @EnableEurekaClient
 public class BpNotificationApplication {
-	public static void main(String[] args) {
-		SpringApplication.run(BpNotificationApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(BpNotificationApplication.class, args);
+    }
 }

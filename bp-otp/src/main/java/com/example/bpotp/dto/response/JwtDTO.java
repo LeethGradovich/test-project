@@ -1,10 +1,10 @@
-package com.example.bpotp.payload.response;
+package com.example.bpotp.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
-public class JwtResponse {
+@AllArgsConstructor
+public class JwtDTO {
     @Getter
     private final String token;
     @Getter

@@ -1,7 +1,6 @@
 package com.example.bpotp.model;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -27,6 +26,6 @@ public class UserAuth {
     private final String phoneNumber;
 
     public UserAuth(String phoneNumber) {
-        this.phoneNumber=phoneNumber;
+        this.phoneNumber = phoneNumber;
     }
 }

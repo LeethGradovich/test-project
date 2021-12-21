@@ -13,13 +13,13 @@ public class MailSenderService {
     private final MailSender sender;
     private final MailMessage message;
 
-    public MailSenderService(MailSender sender){
+    public MailSenderService(MailSender sender) {
         this.sender = sender;
         message = new SimpleMailMessage();
     }
 
     public void sendMessage(String userEmailAddress, String subject, String text) {
-        setMessage(userEmailAddress,subject, text);
+        setMessage(userEmailAddress, subject, text);
         try {
             sender.send((SimpleMailMessage) message);
         } catch (Exception e) {
@@ -27,7 +27,7 @@ public class MailSenderService {
         }
     }
 
-    public void setMessage(String userEmailAddress, String subject, String text){
+    public void setMessage(String userEmailAddress, String subject, String text) {
         setUserEmailAddress(userEmailAddress);
         setSubject(subject);
         setText(text);
@@ -37,11 +37,11 @@ public class MailSenderService {
         message.setTo(userEmailAddress);
     }
 
-    public void setSubject(String subject){
+    public void setSubject(String subject) {
         message.setSubject(subject);
     }
 
-    public void setText(String text){
+    public void setText(String text) {
         message.setText(text);
     }
 }

@@ -4,18 +4,20 @@ import com.example.bpotp.repository.UserAuthRepository;
 import com.example.bpotp.sequrity.jwt.JwtUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.NoSuchElementException;
 
+@Service
 public interface AuthService {
     void writeUserToDatabase(UserAuthRepository userRepository);
 
-    void generateAuthOtp(OtpServiceImpl otpServiceImpl) throws NoSuchAlgorithmException;
+    void generateAuthOtp(OtpService otpServiceImpl) throws NoSuchAlgorithmException;
 
     void findUserByPhoneNumber(UserAuthRepository userRepository) throws NoSuchElementException;
 
-    void validateUserOtp(OtpServiceImpl otpServiceImpl);
+    void validateUserOtp(OtpService otpServiceImpl);
 
     Authentication authenticate(AuthenticationManager authenticationManager);
 

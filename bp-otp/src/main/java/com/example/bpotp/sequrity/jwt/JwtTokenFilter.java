@@ -3,6 +3,7 @@ package com.example.bpotp.sequrity.jwt;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -25,11 +26,11 @@ public class JwtTokenFilter extends GenericFilterBean {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
         try {
-            HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-            String jwt = resolveToken(httpServletRequest);
+            val httpServletRequest = (HttpServletRequest) servletRequest;
+            val jwt = resolveToken(httpServletRequest);
             if (StringUtils.hasText(jwt)) {
                 if (this.jwtUtils.validateJwtToken(jwt)) {
-                    Authentication authentication = this.jwtUtils.getAuthentication(jwt);
+                    val authentication = this.jwtUtils.getAuthentication(jwt);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
@@ -41,11 +42,11 @@ public class JwtTokenFilter extends GenericFilterBean {
     }
 
     private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(JwtConfigurer.AUTHORIZATION_HEADER);
+        val bearerToken = request.getHeader(JwtConfigurer.AUTHORIZATION_HEADER);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
-        String jwt = request.getParameter(JwtConfigurer.AUTHORIZATION_TOKEN);
+        val jwt = request.getParameter(JwtConfigurer.AUTHORIZATION_TOKEN);
         if (StringUtils.hasText(jwt)) {
             return jwt;
         }

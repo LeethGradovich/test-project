@@ -9,9 +9,9 @@ import java.util.ResourceBundle;
 @Component
 @NoArgsConstructor
 public class RequestNotFinishedMessage {
-  private final ResourceBundle resourceBundle = ResourceBundle.getBundle("message");
-  @Getter
-  private final String subject = resourceBundle.getString("message.subject");
-  @Getter
-  private final String text = resourceBundle.getString("message.text");
+    private final ResourceBundle resourceBundle = ResourceBundle.getBundle("message");
+    @Getter
+    private final String subject = resourceBundle.getString("message.subject");
+    @Getter
+    private final String text = resourceBundle.getString("message.text");
 }

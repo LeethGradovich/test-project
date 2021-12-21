@@ -1,15 +1,15 @@
-package com.example.bpotp.payload.request;
+package com.example.bpotp.dto.request;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 
+@Data
 @NoArgsConstructor
-public class PhoneRequest {
+public class LoginDTO {
     @NotBlank
-    @Getter
-    @Setter
     private String phoneNumber;
+    @NotBlank
+    private int code;
 }

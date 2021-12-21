@@ -16,7 +16,7 @@ public class MailSenderController {
     private final MailSenderService mailSenderService;
     private final RequestNotFinishedMessage message;
 
-    @GetMapping( "/{email}")
+    @GetMapping("/{email}")
     public void sendEmailMessage(@PathVariable String email) {
         mailSenderService.sendMessage(email, message.getSubject(), message.getText());
     }
