@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/sendEmail")
 public class MailSenderController {
-
     private final MailSenderService mailSenderService;
     private final RequestNotFinishedMessage message;
 
