@@ -1,10 +1,10 @@
 package com.example.bpotp.sequrity.jwt;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
@@ -21,6 +21,10 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtTokenFilter extends GenericFilterBean {
     private final JwtUtils jwtUtils;
+    @Getter
+    private final String authorizationHeader = "Authorization";
+    @Getter
+    private final String authorizationToken = "access_token";
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
@@ -42,11 +46,11 @@ public class JwtTokenFilter extends GenericFilterBean {
     }
 
     private String resolveToken(HttpServletRequest request) {
-        val bearerToken = request.getHeader(JwtConfigurer.AUTHORIZATION_HEADER);
+        val bearerToken = request.getHeader(authorizationHeader);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
-        val jwt = request.getParameter(JwtConfigurer.AUTHORIZATION_TOKEN);
+        val jwt = request.getParameter(authorizationToken);
         if (StringUtils.hasText(jwt)) {
             return jwt;
         }

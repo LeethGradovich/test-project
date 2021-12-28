@@ -1,9 +1,9 @@
 package com.example.bpotp.controller;
 
-import com.example.bpotp.dto.request.LoginDTO;
-import com.example.bpotp.dto.request.PhoneDTO;
-import com.example.bpotp.dto.response.JwtDTO;
-import com.example.bpotp.dto.response.MessageDTO;
+import com.example.bpotp.dto.request.LoginDto;
+import com.example.bpotp.dto.request.PhoneDto;
+import com.example.bpotp.dto.response.JwtDto;
+import com.example.bpotp.dto.response.MessageDto;
 import com.example.bpotp.repository.UserAuthRepository;
 import com.example.bpotp.sequrity.jwt.JwtUtils;
 import com.example.bpotp.service.OtpService;
@@ -11,7 +11,6 @@ import com.example.bpotp.service.impl.AuthServiceImpl;
 import lombok.RequiredArgsConstructor;
 
 import lombok.val;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,19 +31,19 @@ public class AuthController {
     private final JwtUtils jwtUtils;
 
     @PostMapping("/otp")
-    public MessageDTO generateOtp(@Valid @RequestBody PhoneDTO phoneRequest) throws NoSuchAlgorithmException {
+    public MessageDto generateOtp(@Valid @RequestBody PhoneDto phoneRequest) throws NoSuchAlgorithmException {
         val authService = new AuthServiceImpl(phoneRequest);
         authService.writeUserToDatabase(userRepository);
         authService.generateAuthOtp(otpService);
-        return new MessageDTO("OTP successfully generated");
+        return new MessageDto("OTP successfully generated");
     }
 
     @PostMapping("/validate")
-    public JwtDTO validateOtp(@Valid @RequestBody LoginDTO loginRequest) {
+    public JwtDto validateOtp(@Valid @RequestBody LoginDto loginRequest) {
         val authService = new AuthServiceImpl(loginRequest);
         authService.findUserByPhoneNumber(userRepository);
         authService.validateUserOtp(otpService);
         final Authentication authentication = authService.authenticate(authenticationManager);
-        return new JwtDTO(authService.getJwt(jwtUtils, authentication), authentication.getPrincipal().toString());
+        return new JwtDto(authService.getJwt(jwtUtils, authentication), authentication.getPrincipal().toString());
     }
 }

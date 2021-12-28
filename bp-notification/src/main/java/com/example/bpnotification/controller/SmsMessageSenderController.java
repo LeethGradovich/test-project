@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/sendSMS")
+@RequestMapping("/sms-messages")
 @RequiredArgsConstructor
 public class SmsMessageSenderController {
     private final SmsSenderService smsSenderService;
 
-    @GetMapping("/{phone}")
-    public void sendMessage(@PathVariable String phone) {
-        smsSenderService.sendSMS(phone);
+    @GetMapping("/{phone-number}")
+    public void sendMessage(@PathVariable("phone-number") String phoneNumber) {
+        smsSenderService.sendSMS(phoneNumber);
     }
 }

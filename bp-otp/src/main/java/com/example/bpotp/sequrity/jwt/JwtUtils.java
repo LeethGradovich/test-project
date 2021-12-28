@@ -6,13 +6,12 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.Claims;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +28,8 @@ public class JwtUtils {
     @Value("${bp.app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
-    private static final String AUTHORITIES_KEY = "auth";
+    @Getter
+    private final String authoritiesKey = "auth";
 
     public String generateJwtToken(Authentication authentication) {
         return Jwts.builder()
@@ -65,7 +65,7 @@ public class JwtUtils {
                 .getBody();
         val principal = claims.getSubject();
         val authorities =
-                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+                Arrays.stream(claims.get(authoritiesKey).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-public class MessageDTO {
+public class MessageDto {
     @Getter
     private final String message;
 }

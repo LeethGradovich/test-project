@@ -4,11 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-public class JwtDTO {
-    @Getter
+@Getter
+public class JwtDto {
     private final String token;
-    @Getter
     private final String type = "Bearer";
-    @Getter
     private final String phoneNumber;
 }

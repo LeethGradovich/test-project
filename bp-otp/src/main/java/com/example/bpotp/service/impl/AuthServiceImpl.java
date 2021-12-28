@@ -1,8 +1,8 @@
 package com.example.bpotp.service.impl;
 
 import com.example.bpotp.model.UserAuth;
-import com.example.bpotp.dto.request.LoginDTO;
-import com.example.bpotp.dto.request.PhoneDTO;
+import com.example.bpotp.dto.request.LoginDto;
+import com.example.bpotp.dto.request.PhoneDto;
 import com.example.bpotp.repository.UserAuthRepository;
 import com.example.bpotp.sequrity.AuthToken;
 import com.example.bpotp.sequrity.jwt.JwtUtils;
@@ -17,17 +17,17 @@ import java.security.NoSuchAlgorithmException;
 import java.util.NoSuchElementException;
 
 public class AuthServiceImpl implements AuthService {
-    private final PhoneDTO phoneRequest;
-    private final LoginDTO loginRequest;
+    private final PhoneDto phoneRequest;
+    private final LoginDto loginRequest;
     private final String phoneNumber;
 
-    public AuthServiceImpl(PhoneDTO phoneRequest) {
+    public AuthServiceImpl(PhoneDto phoneRequest) {
         this.phoneRequest = phoneRequest;
         this.loginRequest = null;
         this.phoneNumber = phoneRequest.getPhoneNumber();
     }
 
-    public AuthServiceImpl(LoginDTO loginRequest) {
+    public AuthServiceImpl(LoginDto loginRequest) {
         this.phoneRequest = null;
         this.loginRequest = loginRequest;
         this.phoneNumber = loginRequest.getPhoneNumber();
