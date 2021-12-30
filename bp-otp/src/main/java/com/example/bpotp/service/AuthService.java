@@ -22,4 +22,8 @@ public interface AuthService {
     Authentication authenticate(AuthenticationManager authenticationManager);
 
     String getJwt(JwtUtils jwtUtils, Authentication authentication);
+
+    void generateOtp(UserAuthRepository userRepository, OtpService otpService) throws NoSuchAlgorithmException;
+
+    void validateOtp(UserAuthRepository userRepository, OtpService otpService);
 }

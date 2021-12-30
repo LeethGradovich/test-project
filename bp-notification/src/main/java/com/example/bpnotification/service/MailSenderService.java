@@ -4,13 +4,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface MailSenderService {
-    void sendMessage(String userEmailAddress);
+    void sendMessage(String userEmailAddress, MessageService messageService);
 
-    void setMessage(String userEmailAddress);
+    void setMessage(String userEmailAddress, MessageService messageService);
 
     void setUserEmailAddress(String userEmailAddress);
 
-    void setSubject();
+    void setSubject(MessageService messageService);
 
-    void setText();
+    void setText(MessageService messageService);
 }

@@ -9,10 +9,8 @@ import com.example.bpotp.sequrity.jwt.JwtUtils;
 import com.example.bpotp.service.OtpService;
 import com.example.bpotp.service.impl.AuthServiceImpl;
 import lombok.RequiredArgsConstructor;
-
 import lombok.val;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,18 +30,15 @@ public class AuthController {
 
     @PostMapping("/otp")
     public MessageDto generateOtp(@Valid @RequestBody PhoneDto phoneRequest) throws NoSuchAlgorithmException {
-        val authService = new AuthServiceImpl(phoneRequest);
-        authService.writeUserToDatabase(userRepository);
-        authService.generateAuthOtp(otpService);
+        new AuthServiceImpl(phoneRequest).generateOtp(userRepository, otpService);
         return new MessageDto("OTP successfully generated");
     }
 
     @PostMapping("/validate")
     public JwtDto validateOtp(@Valid @RequestBody LoginDto loginRequest) {
         val authService = new AuthServiceImpl(loginRequest);
-        authService.findUserByPhoneNumber(userRepository);
-        authService.validateUserOtp(otpService);
-        final Authentication authentication = authService.authenticate(authenticationManager);
-        return new JwtDto(authService.getJwt(jwtUtils, authentication), authentication.getPrincipal().toString());
+        authService.validateOtp(userRepository, otpService);
+        return new JwtDto(authService.getJwt(jwtUtils, authService.authenticate(authenticationManager)),
+                authService.authenticate(authenticationManager).getPrincipal().toString());
     }
 }

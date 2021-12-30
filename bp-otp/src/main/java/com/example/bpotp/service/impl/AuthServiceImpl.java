@@ -68,4 +68,15 @@ public class AuthServiceImpl implements AuthService {
     public String getJwt(JwtUtils jwtUtils, Authentication authentication) {
         return jwtUtils.generateJwtToken(authentication);
     }
+
+    public void generateOtp(UserAuthRepository userRepository, OtpService otpService) throws NoSuchAlgorithmException {
+        writeUserToDatabase(userRepository);
+        generateAuthOtp(otpService);
+    }
+
+    public void validateOtp(UserAuthRepository userRepository, OtpService otpService) {
+        findUserByPhoneNumber(userRepository);
+        validateUserOtp(otpService);
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.example.bpnotification.controller;
 
+import com.example.bpnotification.service.MessageService;
 import com.example.bpnotification.service.SmsSenderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,9 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class SmsMessageSenderController {
     private final SmsSenderService smsSenderService;
+    private final MessageService messageService;
 
     @GetMapping("/{phone-number}")
     public void sendMessage(@PathVariable("phone-number") String phoneNumber) {
-        smsSenderService.sendSMS(phoneNumber);
+        smsSenderService.sendSMS(phoneNumber, messageService);
     }
 }
