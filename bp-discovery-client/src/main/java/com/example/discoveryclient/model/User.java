@@ -1,5 +1,7 @@
 package com.example.discoveryclient.model;
 
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -7,6 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "users")
+@NoArgsConstructor
 public class User {
     @Id
     @Column(name = "id")
@@ -24,20 +27,11 @@ public class User {
     private String email;
     private String confirmationMethod;
 
-    public User(Long id, String surname, String name, String patronymic) {
+    public void setFirstPage(Long id, String surname, String name, String patronymic) {
         this.id = id;
         this.surname = surname;
         this.name = name;
         this.patronymic = patronymic;
-        this.passportSeries = null;
-        this.passportNumber = null;
-        this.dateOfBirth = null;
-        this.dateOfIssue = null;
-        this.familyStatus = null;
-        this.monthlyIncome = null;
-        this.monthlyExpenseOnLoansAndAlimony = null;
-        this.email = null;
-        this.confirmationMethod = null;
     }
 
     public void setSecondPageInfo(

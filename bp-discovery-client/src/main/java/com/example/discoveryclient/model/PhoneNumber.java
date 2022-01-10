@@ -1,6 +1,7 @@
 package com.example.discoveryclient.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +14,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "user_auth")
+@NoArgsConstructor
 public class PhoneNumber {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +26,4 @@ public class PhoneNumber {
     @Size(max = 15)
     @Getter
     private String phoneNumber;
-
-    public PhoneNumber() {}
 }

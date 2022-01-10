@@ -6,7 +6,6 @@ import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +26,7 @@ public class SmsSenderServiceImpl implements SmsSenderService {
 
     public void sendSMS(String userPhone, MessageService messageService) {
         Twilio.init(accountSid, authToken);
-        val message = Message.creator(
-                        new com.twilio.type.PhoneNumber(userPhone),
+        Message.creator(new com.twilio.type.PhoneNumber(userPhone),
                         new com.twilio.type.PhoneNumber(serverPhoneNumber),
                         getText(messageService))
                 .setStatusCallback(URI.create(statusUrl))

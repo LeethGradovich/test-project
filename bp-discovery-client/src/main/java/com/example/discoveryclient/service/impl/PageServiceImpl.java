@@ -19,10 +19,15 @@ public class PageServiceImpl implements PageService {
                                   PhoneNumberRepository phoneNumberRepository,
                                   String phoneNumber,
                                   FirstPageDto dto) {
-        userRepository.save(new User(getIdByPhoneNumber(phoneNumber, phoneNumberRepository),
-                dto.getSurname(),
-                dto.getName(),
-                dto.getPatronymic()));
+        if (getUserById(getIdByPhoneNumber(phoneNumber, phoneNumberRepository), userRepository) == null) {
+            val user = new User();
+            user.setFirstPage(getIdByPhoneNumber(phoneNumber, phoneNumberRepository), dto.getSurname(), dto.getName(), dto.getPatronymic());
+            userRepository.save(user);
+        } else {
+            val user = getUserById(getIdByPhoneNumber(phoneNumber, phoneNumberRepository), userRepository);
+            user.setFirstPage(getIdByPhoneNumber(phoneNumber, phoneNumberRepository), dto.getSurname(), dto.getName(), dto.getPatronymic());
+            userRepository.save(user);
+        }
     }
 
     public void saveUserSecondPage(UserRepository userRepository,
