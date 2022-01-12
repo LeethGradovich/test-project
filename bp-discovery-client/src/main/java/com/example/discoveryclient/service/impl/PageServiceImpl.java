@@ -6,67 +6,65 @@ import com.example.discoveryclient.dto.ThirdPageDto;
 import com.example.discoveryclient.model.User;
 import com.example.discoveryclient.repository.PhoneNumberRepository;
 import com.example.discoveryclient.repository.UserRepository;
+import com.example.discoveryclient.sequrity.jwt.JwtUtils;
 import com.example.discoveryclient.service.PageService;
+import com.example.discoveryclient.service.UserMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
+
+import java.util.NoSuchElementException;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class PageServiceImpl implements PageService {
 
-    public void saveUserFirstPage(UserRepository userRepository,
-                                  PhoneNumberRepository phoneNumberRepository,
-                                  String phoneNumber,
-                                  FirstPageDto dto) {
-        if (getUserById(getIdByPhoneNumber(phoneNumber, phoneNumberRepository), userRepository) == null) {
+    private final UserRepository userRepository;
+    private final PhoneNumberRepository phoneNumberRepository;
+    private final UserMapper mapper = Mappers.getMapper(UserMapper.class);
+
+    public void saveUserFirstPage(JwtUtils jwtUtils, String token, FirstPageDto dto) {
+        val phoneNumber = jwtUtils.getPhoneNumberFromJwtToken(token);
+        setUserId(phoneNumber);
+        val user = mapper.firstPageDtoToUser(dto, getUserById(getIdByPhoneNumber(phoneNumber)));
+        userRepository.save(user);
+    }
+
+    public void saveUserSecondPage(JwtUtils jwtUtils, String token, SecondPageDto dto) {
+        val phoneNumber = jwtUtils.getPhoneNumberFromJwtToken(token);
+        val user = mapper.secondPageDtoToUser(dto, getUserById(getIdByPhoneNumber(phoneNumber)));
+        userRepository.save(user);
+    }
+
+    public void saveUserThirdPage(JwtUtils jwtUtils, String token, ThirdPageDto dto) {
+        val phoneNumber = jwtUtils.getPhoneNumberFromJwtToken(token);
+        val user = mapper.thirdPageDtoToUser(dto, getUserById(getIdByPhoneNumber(phoneNumber)));
+        userRepository.save(user);
+    }
+
+    public void setUserId(String phoneNumber) {
+        if (getUserById(getIdByPhoneNumber(phoneNumber)) == null) {
             val user = new User();
-            user.setFirstPage(getIdByPhoneNumber(phoneNumber, phoneNumberRepository), dto.getSurname(), dto.getName(), dto.getPatronymic());
-            userRepository.save(user);
-        } else {
-            val user = getUserById(getIdByPhoneNumber(phoneNumber, phoneNumberRepository), userRepository);
-            user.setFirstPage(getIdByPhoneNumber(phoneNumber, phoneNumberRepository), dto.getSurname(), dto.getName(), dto.getPatronymic());
+            user.setId(getIdByPhoneNumber(phoneNumber));
             userRepository.save(user);
         }
     }
 
-    public void saveUserSecondPage(UserRepository userRepository,
-                                   PhoneNumberRepository phoneNumberRepository,
-                                   String phoneNumber,
-                                   SecondPageDto dto) {
-        val user = getUserById(getIdByPhoneNumber(phoneNumber, phoneNumberRepository), userRepository);
-        user.setSecondPageInfo(dto.getPassportSeries(),
-                dto.getPassportNumber(),
-                dto.getDateOfBirth(),
-                dto.getDateOfIssue(),
-                dto.getFamilyStatus());
-        userRepository.save(user);
-    }
-
-    public void saveUserThirdPage(UserRepository userRepository,
-                                  PhoneNumberRepository phoneNumberRepository,
-                                  String phoneNumber,
-                                  ThirdPageDto dto) {
-        val user = getUserById(getIdByPhoneNumber(phoneNumber, phoneNumberRepository), userRepository);
-        user.setThirdPageInfo(dto.getMonthlyIncome(), dto.getMonthlyExpenseOnLoansAndAlimony(), dto.getEmail(), dto.getConfirmationMethod());
-        userRepository.save(user);
-    }
-
-    public Long getIdByPhoneNumber(String phoneNumber, PhoneNumberRepository phoneNumberRepository) {
-        try {
-            return phoneNumberRepository.findPhoneNumberByPhoneNumber(phoneNumber).orElseThrow(Exception::new).getId();
-        } catch (Exception e) {
-            log.error("Can't find this phone number\n" + e);
-            return null;
+    public Long getIdByPhoneNumber(String phoneNumber) throws NoSuchElementException {
+        if (!phoneNumberRepository.existsPhoneNumberByPhoneNumber(phoneNumber)) {
+            throw new NoSuchElementException("Phone number can not be found");
         }
+        return phoneNumberRepository.findByPhoneNumber(phoneNumber).orElseThrow(NoSuchElementException::new).getId();
     }
 
-    public User getUserById(Long id, UserRepository userRepository) {
-        try {
-            return userRepository.findUserById(id).orElseThrow(Exception::new);
-        } catch (Exception e) {
-            log.error("Can't find this phone number\n" + e);
-            return null;
+    public User getUserById(Long id) throws NoSuchElementException {
+        if (!userRepository.existsById(id)) {
+            throw new NoSuchElementException("User can not be found");
         }
+        return userRepository.findUserById(id).orElseThrow(NoSuchElementException::new);
     }
 }
+

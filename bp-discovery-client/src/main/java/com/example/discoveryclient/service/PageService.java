@@ -4,26 +4,20 @@ import com.example.discoveryclient.dto.FirstPageDto;
 import com.example.discoveryclient.dto.SecondPageDto;
 import com.example.discoveryclient.dto.ThirdPageDto;
 import com.example.discoveryclient.model.User;
-import com.example.discoveryclient.repository.PhoneNumberRepository;
-import com.example.discoveryclient.repository.UserRepository;
+import com.example.discoveryclient.sequrity.jwt.JwtUtils;
+
+import java.util.NoSuchElementException;
 
 public interface PageService {
-    void saveUserFirstPage(UserRepository userRepository,
-                           PhoneNumberRepository phoneNumberRepository,
-                           String phoneNumber,
-                           FirstPageDto dto);
+    void saveUserFirstPage(JwtUtils jwtUtils, String token, FirstPageDto dto);
 
-    void saveUserSecondPage(UserRepository userRepository,
-                            PhoneNumberRepository phoneNumberRepository,
-                            String phoneNumber,
-                            SecondPageDto dto);
+    void saveUserSecondPage(JwtUtils jwtUtils, String token, SecondPageDto dto);
 
-    void saveUserThirdPage(UserRepository userRepository,
-                           PhoneNumberRepository phoneNumberRepository,
-                           String phoneNumber,
-                           ThirdPageDto dto);
+    void saveUserThirdPage(JwtUtils jwtUtils, String token, ThirdPageDto dto);
 
-    Long getIdByPhoneNumber(String phoneNumber, PhoneNumberRepository phoneNumberRepository);
+    void setUserId(String phoneNumber);
 
-    User getUserById(Long id, UserRepository userRepository);
+    Long getIdByPhoneNumber(String phoneNumber) throws NoSuchElementException;
+
+    User getUserById(Long id);
 }
