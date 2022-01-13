@@ -4,16 +4,15 @@ import com.example.discoveryclient.dto.FirstPageDto;
 import com.example.discoveryclient.dto.SecondPageDto;
 import com.example.discoveryclient.dto.ThirdPageDto;
 import com.example.discoveryclient.model.User;
-import com.example.discoveryclient.sequrity.jwt.JwtUtils;
 
 import java.util.NoSuchElementException;
 
 public interface PageService {
-    void saveUserFirstPage(JwtUtils jwtUtils, String token, FirstPageDto dto);
+    void saveUserFirstPage(String token, FirstPageDto dto);
 
-    void saveUserSecondPage(JwtUtils jwtUtils, String token, SecondPageDto dto);
+    void saveUserSecondPage(String token, SecondPageDto dto);
 
-    void saveUserThirdPage(JwtUtils jwtUtils, String token, ThirdPageDto dto);
+    void saveUserThirdPage(String token, ThirdPageDto dto);
 
     void setUserId(String phoneNumber);
 

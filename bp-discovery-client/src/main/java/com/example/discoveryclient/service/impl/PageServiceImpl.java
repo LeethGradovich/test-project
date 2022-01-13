@@ -25,21 +25,22 @@ public class PageServiceImpl implements PageService {
     private final UserRepository userRepository;
     private final PhoneNumberRepository phoneNumberRepository;
     private final UserMapper mapper = Mappers.getMapper(UserMapper.class);
+    private final JwtUtils jwtUtils;
 
-    public void saveUserFirstPage(JwtUtils jwtUtils, String token, FirstPageDto dto) {
+    public void saveUserFirstPage(String token, FirstPageDto dto) {
         val phoneNumber = jwtUtils.getPhoneNumberFromJwtToken(token);
         setUserId(phoneNumber);
         val user = mapper.firstPageDtoToUser(dto, getUserById(getIdByPhoneNumber(phoneNumber)));
         userRepository.save(user);
     }
 
-    public void saveUserSecondPage(JwtUtils jwtUtils, String token, SecondPageDto dto) {
+    public void saveUserSecondPage(String token, SecondPageDto dto) {
         val phoneNumber = jwtUtils.getPhoneNumberFromJwtToken(token);
         val user = mapper.secondPageDtoToUser(dto, getUserById(getIdByPhoneNumber(phoneNumber)));
         userRepository.save(user);
     }
 
-    public void saveUserThirdPage(JwtUtils jwtUtils, String token, ThirdPageDto dto) {
+    public void saveUserThirdPage(String token, ThirdPageDto dto) {
         val phoneNumber = jwtUtils.getPhoneNumberFromJwtToken(token);
         val user = mapper.thirdPageDtoToUser(dto, getUserById(getIdByPhoneNumber(phoneNumber)));
         userRepository.save(user);
